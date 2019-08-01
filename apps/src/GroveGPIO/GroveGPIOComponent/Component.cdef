@@ -1,0 +1,16 @@
+sources:
+{
+	GroveGPIO.c
+}
+
+requires:
+{
+	api:
+	{
+		D2  = le_gpio.api
+		D3  = le_gpio.api
+		D4  = le_gpio.api
+		D5  = le_gpio.api
+		//led_matrix = $CURDIR/../ledmatrix/ledmatrix.api
+	}
+}

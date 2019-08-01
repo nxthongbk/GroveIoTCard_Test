@@ -1,0 +1,248 @@
+/** these functions are migrated from Arduino library:
+ * https://raw.githubusercontent.com/SeeedDocument/Grove-Sensor/master/res/library.rar
+ *
+ */
+
+// acknownledge codes
+DEFINE OK			= 0x00;
+DEFINE PACKETRECIEVEERR		= 0x01;
+DEFINE NOFINGER			= 0x02;
+DEFINE IMAGEFAIL		= 0x03;
+DEFINE IMAGEMESS		= 0x06;
+DEFINE FEATUREFAIL		= 0x07;
+DEFINE NOMATCH			= 0x08;
+DEFINE NOTFOUND			= 0x09;
+DEFINE ENROLLMISMATCH		= 0x0A;
+DEFINE BADLOCATION		= 0x0B;
+DEFINE DBRANGEFAIL		= 0x0C;
+DEFINE UPLOADFEATUREFAIL	= 0x0D;
+DEFINE PACKETRESPONSEFAIL	= 0x0E;
+DEFINE UPLOADFAIL		= 0x0F;
+DEFINE DELETEFAIL		= 0x10;
+DEFINE DBCLEARFAIL		= 0x11;
+DEFINE PASSFAIL			= 0x13;
+DEFINE INVALIDIMAGE		= 0x15;
+DEFINE FLASHERR			= 0x18;
+DEFINE INVALIDREG		= 0x1A;
+DEFINE ADDRCODE			= 0x20;
+DEFINE PASSVERIFY		= 0x21;
+
+// packet start code
+DEFINE STARTCODE		= 0xEF01;
+
+// identifier
+DEFINE COMMANDPACKET		= 0x1;
+DEFINE DATAPACKET		= 0x2;
+DEFINE ACKPACKET		= 0x7;
+DEFINE ENDDATAPACKET		= 0x8;
+
+DEFINE TIMEOUT			= 0xFF;
+DEFINE BADPACKET		= 0xFE;
+
+// commands
+DEFINE GETIMAGE			= 0x01;
+DEFINE IMAGE2TZ			= 0x02;
+DEFINE REGMODEL			= 0x05;
+DEFINE STORE			= 0x06;
+DEFINE DELETE			= 0x0C;
+DEFINE EMPTY			= 0x0D;
+DEFINE VERIFYPASSWORD		= 0x13;
+DEFINE HISPEEDSEARCH		= 0x1B;
+DEFINE TEMPLATECOUNT		= 0x1D;
+
+// custom define
+DEFINE DEFAULTTIMEOUT		= 5000;
+DEFINE PACKET_SIZE		= 64;
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Perform password verification. (handshaking when communicate via UART)
+ * 	This function uses the default password (0) to do the verification
+ * Parameters:
+ * 	None
+ * Return:
+ * 	FINGERPRINT_OK: Password verification is success. (Handshake is OK)
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_PASSFAIL: Password verification failed
+ */
+//------------------------------------------------------------------------------
+FUNCTION bool verifyPassword
+(
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Get fingerprint of detected finger
+ * Parameters:
+ * 	None
+ * Return:
+ * 	FINGERPRINT_OK: Fingerprint generation is OK
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_NOFINGER: No finger was detected
+ * 	FINGERPRINT_IMAGEFAIL: Image generation failed
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 getImage
+(
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Generate character file from fingerprint
+ * Parameters:
+ * 	slot: integer value represents CharBuffer slot (1 or 2)
+ * Return:
+ * 	FINGERPRINT_OK: Image converted
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_IMAGEMESS: Image too messy
+ * 	FINGERPRINT_FEATUREFAIL: Could not find fingerprint features
+ * 	FINGERPRINT_INVALIDIMAGE: Image cannot be generated
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 image2Tz
+(
+	uint8 slot IN
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Create model from character file CharBuffer1 and CharBuffer2
+ * Parameters:
+ * 	None
+ * Return:
+ * 	FINGERPRINT_OK: Model created
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_INVALIDREG: Fingerprints did not match
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 createModel
+(
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Delete all stored model in module
+ * Parameters:
+ * 	None
+ * Return:
+ * 	FINGERPRINT_OK: Model created
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_INVALIDREG: Failed to empty the database (stored model)
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 emptyDatabase
+(
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Store created model to flash memory
+ * Parameters:
+ * 	id: integer value represents id of stored model, depending on flash size
+ * Return:
+ * 	FINGERPRINT_OK: Stored
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_BADLOCATION: Could not store in that location
+ * 	FINGERPRINT_FLASHERR: Error writing to flash
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 storeModel
+(
+	uint16 id IN
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Delete stored model
+ * Parameters:
+ * 	id: integer value represents id of stored model, depending on flash size
+ * Return:
+ * 	FINGERPRINT_OK: Stored
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_DELETEFAIL: Failed to delete stored model
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 deleteModel
+(
+	uint16 id IN
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Perform fast search for character file at slot 1 in stored fingers
+ * Parameters:
+ * 	fingerIDPtr: output the id of found finger
+ * 	confidencePtr: output the confidence value of found finger
+ * Return:
+ * 	FINGERPRINT_OK: Stored
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ * 	FINGERPRINT_NOTFOUND: Did not find a match
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 fingerFastSearch
+(
+	uint16 fingerID OUT,
+	uint16 confidence OUT
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Get the number of stored models
+ * Parameters:
+ * 	templateCountPtr: output the number of stored models
+ * Return:
+ * 	FINGERPRINT_OK: Read successfully
+ * 	FINGERPRINT_PACKETRECIEVEERR: Communication error
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 getTemplateCount
+(
+	uint16 templateCount OUT
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Format, do checksum and write packet to module
+ * Parameters:
+ * 	addr: module address (4 bytes)
+ * 	packettype: packet identifier
+ * 	packetPtr: input packet pointer to its content
+ * 	packetSize: size of passed packet content
+ * Return:
+ * 	None
+ */
+//------------------------------------------------------------------------------
+FUNCTION writePacket
+(
+	uint32 addr IN,
+	uint8 packettype IN,
+	uint8 packet[PACKET_SIZE] IN
+);
+
+//------------------------------------------------------------------------------
+/**
+ * Descrition:
+ * 	Get and verify the received packet
+ * Parameters:
+ * 	packetPtr: output buffer to store received packet
+ * 	packetSize: putput the received packet length
+ * 	timeout: specify waiting timeout in ms
+ * Return:
+ * 	Length of packet content
+ */
+//------------------------------------------------------------------------------
+FUNCTION uint8 getReply
+(
+	uint8 packet[PACKET_SIZE] OUT,
+	uint16 timeout IN
+);

@@ -1,0 +1,24 @@
+sources:
+{
+	ledmatrix.c
+}
+
+provides:
+{
+	api:
+	{
+		$CURDIR/../../ledmatrix.api
+	}
+}
+requires:
+{
+	component:
+	{
+		$CURDIR/../i2c-utils
+	}
+}
+
+cflags:
+{
+	-I$CURDIR/../i2c-utils
+}

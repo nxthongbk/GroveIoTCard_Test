@@ -1,0 +1,40 @@
+sandboxed: true
+start: manual
+version: 0.0
+
+executables:
+{
+	LedMatrix = (
+		components/ledmatrix
+	)
+}
+
+processes:
+{
+	//run:
+	//{
+	//	( LedMatrix )
+	//}
+
+	envVars:
+	{
+		LE_LOG_LEVEL = DEBUG
+	}
+	faultAction: stopApp
+}
+
+bindings:
+{
+}
+
+requires:
+{
+	device:
+	{
+#if ${LEGATO_TARGET} = wp85
+		[rw]	/dev/i2c-1	/dev/
+#elif ${LEGATO_TARGET} = wp76xx
+		[rw]	/dev/i2c-5	/dev/
+#endif
+	}
+}

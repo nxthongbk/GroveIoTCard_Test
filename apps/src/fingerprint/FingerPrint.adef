@@ -1,0 +1,39 @@
+sandboxed: true
+start: auto
+version: 0.1
+
+executables:
+{
+	FingerPrint = (
+		fingerprint
+	)
+}
+
+processes:
+{
+	//run:
+	//{
+	//	( FingerPrint )
+	//}
+
+	envVars:
+	{
+		LE_LOG_LEVEL = DEBUG
+	}
+}
+
+bindings:
+{
+}
+
+requires:
+{
+	device:
+	{
+#if ${LEGATO_TARGET} = wp85
+		[rw]	/dev/ttyHS0	/dev/
+#elif ${LEGATO_TARGET} = wp76xx
+		[rw]	/dev/ttyHS0	/dev/
+#endif
+	}
+}

@@ -1,0 +1,31 @@
+version: 1.0
+sandboxed: true
+start: manual
+
+executables:
+{
+	gasMQ9 = ( Component )
+}
+
+processes:
+{
+	envVars:
+	{
+		LE_LOG_LEVEL = DEBUG
+	}
+
+	//run:
+	//{
+	//	( gasMQ9 )
+	//}
+	faultAction: stopApp
+}
+
+requires:
+{
+}
+
+bindings:
+{
+	gasMQ9.Component.le_adc -> modemService.le_adc
+}

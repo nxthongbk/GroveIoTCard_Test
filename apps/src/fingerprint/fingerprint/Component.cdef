@@ -1,0 +1,20 @@
+sources:
+{
+	ada_fingerprint.c
+}
+
+provides:
+{
+	api:
+	{
+		$CURDIR/../fingerprint.api
+	}
+}
+requires:
+{
+}
+
+cflags:
+{
+	-DDEBUG
+}
