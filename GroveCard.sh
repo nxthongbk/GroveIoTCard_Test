@@ -25,11 +25,13 @@ source ./lib/common.sh
 
 target_setup() {
 
-	echo -e "${COLOR_TITLE}Please make sure that you have:${COLOR_RESET}"
-	echo -e "${COLOR_WARN}   - connected RGB Led Matrix module into I2C port on Grove IOT Card${COLOR_RESET}"
-	echo -e "${COLOR_WARN}   - connected FingerPrint sensor into UART port on Grove IOT Card${COLOR_RESET}"
-	echo -e "${COLOR_WARN}   - connected LEDs module into D2-D5 ports on Grove IOT Card${COLOR_RESET}"
-	prompt_char "Press ENTER to continue..."
+	prompt_char "Connect Grove Card to unit. Press ENTER to continue..."
+	prompt_char "Connect RGB Led Matrix module into I2C port on Grove IOT Card. Press ENTER to continue..."
+	prompt_char "Connect FingerPrint sensor into UART port on Grove IOT Card. Press ENTER to continue..."
+	prompt_char "LEDs module into D2-D5 ports on Grove IOT Card. Press ENTER to continue..."
+	prompt_char "Connect unit to USB hub (main USB). Press ENTER to continue..."
+
+	WaitForDevice "Up" "$rbTimer"
 
 	# create test folder
 	echo -e "${COLOR_TITLE}Creating testing folder${COLOR_RESET}"
