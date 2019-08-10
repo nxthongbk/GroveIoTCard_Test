@@ -1,10 +1,3 @@
-/**
- * Description: This file is migrated from https:github.com/Seeed-Studio/Seeed_RGB_LED_Matrix
- * 		Some functions have been renamed but its code still be the same
- * Author: tqkieu@tma.com.vn
- * 
- **/
-
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>

@@ -1,7 +1,6 @@
 /**
  * Description: This file is migrated from https://raw.githubusercontent.com/SeeedDocument/Grove-Fingerprint_Sensor/master/res/Fingerprint_library.rar
  * 		Some functions have been renamed or changed their format to make them suitable for Legato code
- * Author: tqkieu@tma.com.vn
  * 
  **/
 

@@ -9,14 +9,6 @@ cflags:
     -std=c99
 }
 
-provides:
-{
-    api:
-    {
-        $CURDIR/../gasMQ9.api
-    }
-}
-
 requires:
 {
     api:
@@ -28,6 +20,6 @@ requires:
 
 sources:
 {
-    gasMQ9Sensor.c
+    lightSensor.c
 }
 

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 source ../configuration.cfg
 
 rm -rf ./bin/*.update

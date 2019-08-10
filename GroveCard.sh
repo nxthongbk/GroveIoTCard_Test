@@ -42,7 +42,7 @@ target_setup() {
 	ScpToTarget "./apps/bin/GroveGPIO.$TARGET_TYPE.update" "/tmp/iot_grove_card/apps"
 	ScpToTarget "./apps/bin/LedMatrix.$TARGET_TYPE.update" "/tmp/iot_grove_card/apps"
 	ScpToTarget "./apps/bin/FingerPrint.$TARGET_TYPE.update" "/tmp/iot_grove_card/apps"
-	ScpToTarget "./apps/bin/gasMQ9.$TARGET_TYPE.update" "/tmp/iot_grove_card/apps"
+	ScpToTarget "./apps/bin/lightSensor.$TARGET_TYPE.update" "/tmp/iot_grove_card/apps"
 
 	# install apps
 	if AppExist "GroveGPIO"
@@ -69,12 +69,12 @@ target_setup() {
 			echo -e "${COLOR_ERROR}Failed to remove app FingerPrint${COLOR_RESET}"
 		fi
 	fi
-	if AppExist "gasMQ9"
+	if AppExist "lightSensor"
 	then
-		if ! AppRemove "gasMQ9"
+		if ! AppRemove "lightSensor"
 		then
 			TEST_RESULT="f"
-			echo -e "${COLOR_ERROR}Failed to remove app gasMQ9${COLOR_RESET}"
+			echo -e "${COLOR_ERROR}Failed to remove app lightSensor${COLOR_RESET}"
 		fi
 	fi
 
@@ -84,8 +84,8 @@ target_setup() {
 	SshToTarget "/legato/systems/current/bin/update /tmp/iot_grove_card/apps/LedMatrix.$TARGET_TYPE.update"
 	echo -e "${COLOR_TITLE}Installling app 'FingerPrint'...${COLOR_RESET}"
 	SshToTarget "/legato/systems/current/bin/update /tmp/iot_grove_card/apps/FingerPrint.$TARGET_TYPE.update"
-	echo -e "${COLOR_TITLE}Installling app 'gasMQ9'...${COLOR_RESET}"
-	SshToTarget "/legato/systems/current/bin/update /tmp/iot_grove_card/apps/gasMQ9.$TARGET_TYPE.update"
+	echo -e "${COLOR_TITLE}Installling app 'lightSensor'...${COLOR_RESET}"
+	SshToTarget "/legato/systems/current/bin/update /tmp/iot_grove_card/apps/lightSensor.$TARGET_TYPE.update"
 
 	# default state
 	target_default_state
@@ -121,6 +121,37 @@ target_default_state() {
 	# FingerPrint
 	# Do nothing
 	return 0
+}
+
+magic_P() {	
+	while true
+	do
+		lightSensor=$(SshToTarget "/legato/systems/current/bin/app runProc lightSensor --exe=lightSensor --")
+		# echo "$lightSensor"
+		# color=""
+		if [[ $lightSensor -gt 1700 ]]
+		then
+			color="red"
+		else
+			if [[ $lightSensor -gt 1300 ]]
+			then
+				color="green"
+			else
+				if [[ $lightSensor -gt 900 ]]
+				then
+					color="blue"
+				else
+					if [[ $lightSensor -gt 500 ]]
+					then
+						color="pink"
+					else
+						color="white"
+					fi
+				fi
+			fi
+		fi
+		SshToTarget "/legato/systems/current/bin/app runProc LedMatrix --exe=LedMatrix -- $color string P"
+	done
 }
 
 target_start_test() {
@@ -257,22 +288,29 @@ target_start_test() {
 		return 1
 	fi
 
-	# gasMQ9 (ADC)
+	# lightSensor (ADC)
 	# prompt_char "Put your finger to FingerPrint sensor then press ENTER to continue..."
-	local gasMQ9=$(SshToTarget "/legato/systems/current/bin/app runProc gasMQ9 --exe=gasMQ9 --")
-	echo "$gasMQ9"
+	magic_P &
+	local bgid=$!
+
 	local resp=""
 	while [ "$resp" != "Y" ] && [ "$resp" != "N" ]
 	do
-		local resp=$(prompt_char "Do you see leter 'P' displayed with different colors on LED matrix? (Y/N)")
+		local resp=$(prompt_char "Cover then Uncover light sensor. Do you see leter 'P' displayed with different colors on LED matrix? (Y/N)")
 	done
 	if [ "$resp" = "N" ]
 	then
-		echo -e "${COLOR_ERROR}Failed to take image of your finger. ADC check is failed.${COLOR_RESET}"
+		kill $bgid
+		wait $bgid
+
+		echo -e "${COLOR_ERROR}Light sensor has failed. ADC check is failed.${COLOR_RESET}"
 		return 1
 	else
 		echo -e "${COLOR_PASS}ADC check is passed.${COLOR_RESET}"
 	fi
+	
+	kill $bgid
+	wait $bgid
 
 	return 0
 }
@@ -319,17 +357,17 @@ target_cleanup() {
 		echo -e "${COLOR_ERROR}App 'FingerPrint' has not been installed${COLOR_RESET}"
 	fi
 
-	if AppExist "gasMQ9"
+	if AppExist "lightSensor"
 	then
-		echo -e "${COLOR_TITLE}Uninstalling app 'gasMQ9'...${COLOR_RESET}"
-		if ! AppRemove "gasMQ9"
+		echo -e "${COLOR_TITLE}Uninstalling app 'lightSensor'...${COLOR_RESET}"
+		if ! AppRemove "lightSensor"
 		then
 			TEST_RESULT="f"
-			echo -e "${COLOR_ERROR}Failed to remove app 'gasMQ9'${COLOR_RESET}"
+			echo -e "${COLOR_ERROR}Failed to remove app 'lightSensor'${COLOR_RESET}"
 		fi
 	else
 		TEST_RESULT="f"
-		echo -e "${COLOR_ERROR}App 'gasMQ9' has not been installed${COLOR_RESET}"
+		echo -e "${COLOR_ERROR}App 'lightSensor' has not been installed${COLOR_RESET}"
 	fi
 
 	# remove tmp folder?

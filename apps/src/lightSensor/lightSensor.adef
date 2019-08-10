@@ -4,7 +4,7 @@ start: manual
 
 executables:
 {
-	gasMQ9 = ( Component )
+	lightSensor = ( Component )
 }
 
 processes:
@@ -16,7 +16,7 @@ processes:
 
 	//run:
 	//{
-	//	( gasMQ9 )
+	//	( lightSensor )
 	//}
 	faultAction: stopApp
 }
@@ -27,5 +27,5 @@ requires:
 
 bindings:
 {
-	gasMQ9.Component.le_adc -> modemService.le_adc
+	lightSensor.Component.le_adc -> modemService.le_adc
 }

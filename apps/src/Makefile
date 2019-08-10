@@ -14,7 +14,7 @@ $(TARGETS):
 		fingerprint/FingerPrint.adef
 
 	mkapp -v -t $@ \
-		gasMQ9/gasMQ9.adef
+		lightSensor/lightSensor.adef
 
 
 clean:
