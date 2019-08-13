@@ -4,5 +4,5 @@ How to build test app:
 
 How to run test:
 1. ```GroveIoTCard_Test# ./GroveCard.sh```
-2. Check Passed/Failed Result in the end of script.
+2. Check test result: ```PASSED/FAILED``` in the end of script.
 
