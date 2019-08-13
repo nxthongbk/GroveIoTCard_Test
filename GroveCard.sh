@@ -123,6 +123,22 @@ target_default_state() {
 	return 0
 }
 
+#=== FUNCTION ==================================================================
+#
+#        NAME: numCompare
+# DESCRIPTION: Compare two number
+# PARAMETER 1: number1
+# PARAMETER 2: number2
+#
+#    RETURNS: 0 number1 is less than number2 + 100
+#             1 number1 is greater than number2 + 100
+#
+#===============================================================================
+numCompare() {
+	local res=$(awk -v n1="$1" -v n2="$2" -v res="0" 'BEGIN {print (n1>n2+100?"1":"0") }')
+	return $res
+}
+
 magic_P() {	
 	while true
 	do
@@ -289,28 +305,24 @@ target_start_test() {
 	fi
 
 	# lightSensor (ADC)
-	# prompt_char "Put your finger to FingerPrint sensor then press ENTER to continue..."
-	magic_P &
-	local bgid=$!
+	prompt_char "Please cover light sensor then press ENTER to continue..."
+	cover_value=$(SshToTarget "/legato/systems/current/bin/app runProc lightSensor --exe=lightSensor --")
+	echo "Light Sensor Value: '$cover_value'" >&2
 
-	local resp=""
-	while [ "$resp" != "Y" ] && [ "$resp" != "N" ]
-	do
-		local resp=$(prompt_char "Cover then Uncover light sensor. Do you see leter 'P' displayed with different colors on LED matrix? (Y/N)")
-	done
-	if [ "$resp" = "N" ]
+	prompt_char "Please uncover light sensor then press ENTER to continue..."
+	uncover_value=$(SshToTarget "/legato/systems/current/bin/app runProc lightSensor --exe=lightSensor --")
+	echo "Light Sensor Value: '$uncover_value'" >&2
+
+	numCompare $cover_value $uncover_value
+	if [ $? = 0 ]
 	then
-		kill $bgid
-		wait $bgid
-
-		echo -e "${COLOR_ERROR}Light sensor has failed. ADC check is failed.${COLOR_RESET}"
-		return 1
+		echo "Light sensor value when uncover greater than light sensor value when cover" >&2
+		SshToTarget "/legato/systems/current/bin/app runProc LedMatrix --exe=LedMatrix -- green string P"
 	else
-		echo -e "${COLOR_PASS}ADC check is passed.${COLOR_RESET}"
+		echo "Light sensor value when uncover is not greater than light sensor value when cover" >&2
+		SshToTarget "/legato/systems/current/bin/app runProc LedMatrix --exe=LedMatrix -- red string F"
+		return 1
 	fi
-	
-	kill $bgid
-	wait $bgid
 
 	return 0
 }
